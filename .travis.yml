@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "12.13"
+  - "10"
 deploy:
   provider: npm
   email: tanjiahui2015@foxmail.com
