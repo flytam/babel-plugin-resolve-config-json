@@ -4,7 +4,7 @@
   "description": "A babel plugin easy resolve jsconfig.json/tsconfig.json's paths",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"TODO\" "
+    "postversion": "git push --follow-tags"
   },
   "author": "flytam",
   "license": "MIT",

@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "12.13"
+deploy:
+  provider: npm
+  email: tanjiahui2015@foxmail.com
+  api_key:
+    secure: uB0g1hGwvE4iGOv9dz/vyBAcH11Skm3SGUctk/teZkdKbYdbXhOCrVuqD8XiNSEUnjrxe+csbQxqudOYQfZ3m4bJUGzqlNcjzGcwoyZ0MN/4rsLLSBrJxuhHBNTE/IUqxqbz+viKO10AYsx04ofhBJl3wkpsAZYzJnil/Uyhf4Ol8ubu8aEuJLSmmaL1FzfHj3ytaZFinVhJIYuyj9ycE/0PIJMjZXOJpIEYcVAHUBHBAlpc1Q2w1yBffA5nhHtffeWDyu9JOEe2+D/XcdUTX/ZOh+1gbt3r2eF4ft4S4gI7unCVs7axLatI4IikAIpMDknw8AYHJVyrMR8UUuK5rKIDVze6YozjVIcZLBzatqOhtRlQ/5QQmqDlggYFiqDR1Icc98B27krJn1WHoS7y+j6sLxP1uUbCXepXX56VVD9DrH6Iwurz+ucF5f41STtMpsKbgEfNKDXbsR+h0wpsMM0WYB/Zn5tZDYJE3GfJLREWbVcjHFNDx8z1IOmSXkM6ztjG/vcLm+2SnyHzs+NDIYzemrw1tHsx4K+VtyhuCZAc9Ok1OLUR69Jl7SX/sOf0zxsETfwZmXsUItcgoCJczKjahBOohcqYzvdZMmpB6GVA8JmV1kQr5BbjpBFNwYOt5etAnYfiCBkE6zUUrZ4bhVrkR0Dp5/WCdQ0mjIOyvIc=
+  on:
+    tags: true
