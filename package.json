@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-resolve-config-json",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A babel plugin easy resolve jsconfig.json/tsconfig.json's paths",
   "main": "index.js",
   "scripts": {
