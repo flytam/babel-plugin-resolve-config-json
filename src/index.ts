@@ -1,50 +1,46 @@
-const path = require("path");
-const t = require("@babel/types");
-module.exports = function(babel) {
-  return {
+import * as path from "path";
+import * as t from "@babel/types";
+import { PluginObj, NodePath } from "@babel/core";
+import { parsePath } from "./parsePath";
+
+interface CustomParams {
+  isTypescript: boolean;
+  modules: string[];
+}
+
+interface Config {
+  file: {
+    opts: {
+      filename: string;
+    };
+  };
+  opts: CustomParams;
+  currentFilePath: string;
+  myPaths: { [key: string]: string };
+}
+
+const pwd = process.cwd();
+
+module.exports = function() {
+  const plugin: PluginObj<Config> = {
     visitor: {
       Program: {
-        enter(babelPath, state) {
-          const curentFilePath = state.file.opts.filename;
+        enter(_) {
+          const currentFilePath = this.file?.opts?.filename;
           const isTypescript = this.opts.isTypescript || false;
           if (process.env.DEBUG_BABEL) {
-            this.curentFilePath = state.file.opts.filename;
+            this.currentFilePath = this.file?.opts.filename;
           }
 
           // read from our config that dependence which modules
-          const depModules = this.opts.modules || [];
+          // default our cmd directory
+          const depModules = this.opts.modules || [pwd];
 
-          // find if the current file is in a dependent module. Get dependent path
-          const findPath = depModules.find(depModule =>
-            curentFilePath.includes(depModule)
-          );
-
-          // only handle our dependence path
-          if (findPath) {
-            // read json config
-            const depJson = require(path.resolve(
-              findPath,
-              isTypescript ? "./tsconfig.json" : "./jsconfig.json"
-            ));
-
-            //  read config's paths field and baseUrl field
-            if (depJson.compilerOptions && depJson.compilerOptions.paths) {
-              const paths = { ...depJson.compilerOptions.paths };
-              const baseUrl = depJson.compilerOptions.baseUrl || ".";
-
-              // transform path field into absolute path
-              for (let [pathKey, pathValues] of Object.entries(paths)) {
-                // webpack only support one key to one path
-                paths[pathKey] = path.resolve(findPath, baseUrl, pathValues[0]);
-              }
-
-              this.myPaths = paths;
-            }
-          }
+          this.myPaths = parsePath(currentFilePath, depModules, isTypescript);
         }
       },
       ImportDeclaration: {
-        enter(babelPath, state) {
+        enter(babelPath) {
           if (this.myPaths) {
             // import xx from `${importPath}`
             const importPath = babelPath.node.source.value;
@@ -58,10 +54,10 @@ module.exports = function(babel) {
         }
       },
       ExportNamedDeclaration: {
-        enter(babelPath, state) {
+        enter(babelPath) {
           if (this.myPaths) {
             // export xx from `${importPath}`
-            if (babelPath.node.source && babelPath.node.source.value) {
+            if (babelPath?.node?.source?.value) {
               const importPath = babelPath.node.source.value;
               processImportPath.call(
                 this,
@@ -76,12 +72,12 @@ module.exports = function(babel) {
       CallExpression: {
         enter(babelPath) {
           if (this.myPaths) {
+            // @ts-ignore
             const isRequire = babelPath.get("callee").node.name === "require";
             if (isRequire) {
               // const x = require(`${importPath}`)
-              const importPath =
-                babelPath.get("arguments")[0] &&
-                babelPath.get("arguments")[0].node.value;
+              // @ts-ignore
+              const importPath = babelPath.get("arguments")?.[0].node.value;
               processImportPath.call(
                 this,
                 importPath,
@@ -94,15 +90,14 @@ module.exports = function(babel) {
       }
     }
   };
+  return plugin;
 };
 
-/**
- *
- * @param {string} importPath path dependent string
- * @param {{replaceWith:(path)=>{}}} babelPath the ast node for importPath
- * @param {{[key:string]:string}} myPaths absolute path configuration
- */
-function processImportPath(importPath, babelPath, myPaths) {
+function processImportPath(
+  importPath: string,
+  babelPath: NodePath,
+  myPaths: Config["myPaths"]
+) {
   for (let [p, absolutePath] of Object.entries(myPaths)) {
     const regStrP = p.replace("*", "(.*)");
     const reg = RegExp(`^${regStrP}$`);
@@ -126,7 +121,7 @@ function processImportPath(importPath, babelPath, myPaths) {
             file,
             "\t",
             "current file path",
-            this.curentFilePath,
+            this.currentFilePath,
             "\t\n\n"
           );
         }
