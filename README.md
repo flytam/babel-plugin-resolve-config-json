@@ -20,7 +20,7 @@ const babelOptions = {
       require.resolve("babel-plugin-resolve-config-json"),
       {
         isTypescript: true, // true时读取tsconfig.json，false时读取jsconfig.json。默认是false
-        modules: [path.resolve(__dirname, `${projectRootPath}`)] // 接收一个路径数组，会读取路径根目录下的config.json进行配置。一般情况下，单项目直接 就是项目根路径就行。如果引用另一个项目的代码，则需要额外指定那个目录
+        modules: [path.resolve(__dirname, `${projectRootPath}`)] // 默认是运行终端命令的目录。可以传递接收一个路径数组，会读取路径根目录下的config.json进行配置。
       }
     ]
   ]
@@ -73,7 +73,7 @@ module.resolve = {
 
 #### 可靠吗
 
-已经在日常线上项目打包使用半年多（从 2019.9 月），稳得一 b。（如果有 bug，webpack 打包阶段会抛异常）
+已经在日常线上项目打包使用半年多（从 2019.9 月），稳得一 b。（如果有 bug，webpack 打包阶段会抛异常）。可参考单元测试中的样例
 
 #### 注意
 
@@ -81,4 +81,10 @@ module.resolve = {
 
 #### 单元测试
 
-TODO
+```bash
+npm run test
+```
+
+#### TODO
+
+直接异步导入转换`import('module').then(x => ...)`
