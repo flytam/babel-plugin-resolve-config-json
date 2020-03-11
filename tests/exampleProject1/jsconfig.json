@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@src/*": ["./*"],
+      "@exampleProject2/*": ["../../exampleProject2/src/*"],
+      "config": ["./configs/config.ts"]
+    },
+    "baseUrl": "./src/"
+  }
+}

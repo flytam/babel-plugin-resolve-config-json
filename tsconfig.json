@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "noImplicitAny": false,
+    "sourceMap": false,
+    "rootDir": "./src/",
+    "moduleResolution": "node",
+    "outDir": "build",
+    "lib": ["es5", "es2015"]
+  },
+  "exclude": ["node_modules", "build", "tests"]
+}
