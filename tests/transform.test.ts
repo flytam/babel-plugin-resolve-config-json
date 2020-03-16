@@ -41,6 +41,22 @@ function testWithExportImport(
   );
 }
 
+function testWithDynamicImport(
+  source: string,
+  output: string,
+  transformerOpts: TransformOptions
+) {
+  const code = `import('${source}')`;
+  const result = transform(code, transformerOpts);
+  expect(result.code).toBe(`import("${path.join(testRootDir, output)}");`);
+
+  const code2 = `import('${source}').then(x=>x)`;
+  const result2 = transform(code2, transformerOpts);
+  expect(result2.code).toBe(
+    `import("${path.join(testRootDir, output)}").then(x => x);`
+  );
+}
+
 describe("单一项目内转换", () => {
   const transformerOpts = {
     babelrc: false,
@@ -87,6 +103,20 @@ describe("单一项目内转换", () => {
     );
 
     testWithExportImport(
+      "config",
+      "exampleProject1/src/configs/config.ts",
+      opts
+    );
+  });
+
+  test("动态导入 import(`x`).then(x=>x)", () => {
+    testWithDynamicImport(
+      "@src/configs/config",
+      "exampleProject1/src/configs/config",
+      opts
+    );
+
+    testWithDynamicImport(
       "config",
       "exampleProject1/src/configs/config.ts",
       opts

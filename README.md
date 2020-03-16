@@ -86,7 +86,3 @@ module.resolve = {
 ```bash
 npm run test
 ```
-
-#### TODO
-
-直接异步导入转换`import('module').then(x => ...)`

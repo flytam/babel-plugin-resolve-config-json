@@ -73,7 +73,11 @@ export function Plugin() {
           if (this.myPaths) {
             // @ts-ignore
             const isRequire = babelPath.get("callee").node.name === "require";
-            if (isRequire) {
+
+            const isDynamicImport =
+              babelPath.get("callee").node.type === "Import";
+
+            if (isRequire || isDynamicImport) {
               // const x = require(`${importPath}`)
               // @ts-ignore
               const importPath = babelPath.get("arguments")?.[0].node.value;
