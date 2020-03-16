@@ -1,6 +1,10 @@
 ## babel-plugin-resolve-config-json
 
-[![Build Status](https://travis-ci.com/flytam/babel-plugin-resolve-config-json.svg?branch=master)](https://travis-ci.com/flytam/babel-plugin-resolve-config-json)
+[![Build Status](https://travis-ci.com/flytam/babel-plugin-resolve-config-json.svg?branch=master)](https://travis-ci.com/flytam/babel-plugin-resolve-config-json) 
+
+
+[![Build Status](https://img.shields.io/npm/v/babel-plugin-resolve-config-json.svg?style=flat-square)](https://npmjs.org/package/babel-plugin-resolve-config-json) 
+
 
 > 根据 jsconfig.json/tsonfig.json 的路径映射自动转换路径，省去手动编写 `webpack` 的 `resolve.alias` 配置
 
