@@ -1,10 +1,8 @@
 ## babel-plugin-resolve-config-json
 
-[![Build Status](https://travis-ci.com/flytam/babel-plugin-resolve-config-json.svg?branch=master)](https://travis-ci.com/flytam/babel-plugin-resolve-config-json) 
+[![Build Status](https://travis-ci.com/flytam/babel-plugin-resolve-config-json.svg?branch=master)](https://travis-ci.com/flytam/babel-plugin-resolve-config-json)
 
-
-[![Build Status](https://img.shields.io/npm/v/babel-plugin-resolve-config-json.svg?style=flat-square)](https://npmjs.org/package/babel-plugin-resolve-config-json) 
-
+[![Build Status](https://img.shields.io/npm/v/babel-plugin-resolve-config-json.svg?style=flat-square)](https://npmjs.org/package/babel-plugin-resolve-config-json)
 
 > 根据 jsconfig.json/tsonfig.json 的路径映射自动转换路径，省去手动编写 `webpack` 的 `resolve.alias` 配置
 
@@ -26,10 +24,10 @@ const babelOptions = {
       require.resolve("babel-plugin-resolve-config-json"),
       {
         isTypescript: true, // true时读取tsconfig.json，false时读取jsconfig.json。默认是false
-        modules: [path.resolve(__dirname, `${projectRootPath}`)] // 默认是运行终端命令的目录。可以传递接收一个路径数组，会读取路径根目录下的config.json进行配置。
-      }
-    ]
-  ]
+        modules: [path.resolve(__dirname, `${projectRootPath}`)], // 默认是运行终端命令的目录。可以传递接收一个路径数组，会读取路径根目录下的config.json进行配置。
+      },
+    ],
+  ],
 };
 ```
 
@@ -66,8 +64,8 @@ module.resolve = {
     Components: path.resolve(__dirname, "..", "src", "components"),
     Ducks: path.resolve(__dirname, "..", "src", "ducks"),
     Shared: path.resolve(__dirname, "..", "src", "shared"),
-    App: path.join(__dirname, "..", "src")
-  }
+    App: path.join(__dirname, "..", "src"),
+  },
 };
 ```
 
@@ -90,3 +88,9 @@ module.resolve = {
 ```bash
 npm run test
 ```
+
+#### 已知问题
+
+打包 hash 受到项目存放路径不同的影响，转换成绝对路径的原因会导致打包产物 hash 可能不一致。若在 CI 机器上则无问题。
+
+TODO: 多加一步绝对路径处理成当前文件的相对路径，能一定程度改善这个问题
