@@ -96,6 +96,6 @@ npm run test
 
 #### 已知问题
 
-打包 hash 受到项目存放路径不同的影响，转换成绝对路径的原因会导致打包产物 hash 可能不一致。若在 CI 机器上则无问题。
+若使用`webpack.HashedModuleIdsPlugin`。打包 hash 受到项目存放路径不同的影响，转换成绝对路径的原因会导致打包产物 hash 可能不一致。若在 CI 机器上则无问题。
 
-TODO: 多加一步绝对路径处理成当前文件的相对路径，能一定程度改善这个问题
+TODO: 多加一步绝对路径处理成当前文件的相对路径，能一定程度改善这个问题。或不使用`webpack.HashedModuleIdsPlugin`
