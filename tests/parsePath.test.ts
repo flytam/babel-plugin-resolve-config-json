@@ -4,13 +4,16 @@ import * as path from "path";
 const exampleProject1 = path.resolve(__dirname, "./exampleProject1/");
 const exampleProject2 = path.resolve(__dirname, "./exampleProject2/");
 
+// @todo
+const testRootDir = path.resolve(__dirname, "./");
+
 describe("单一项目解析", () => {
   const filePath = path.join(exampleProject1, "src", "index.ts");
 
   const answer = {
     "@src/*": path.join(testRootDir, "exampleProject1/src/*"),
     "@exampleProject2/*": path.join(testRootDir, "exampleProject2/src/*"),
-    config: path.resolve(testRootDir, "exampleProject1/src/configs/config.ts")
+    config: path.resolve(testRootDir, "exampleProject1/src/configs/config.ts"),
   };
   // 下面两个测试，除了 读取tsconfig/jsconfig的区别外。baseUrl也做了对比对照
 
@@ -39,7 +42,7 @@ describe("多项目解析", () => {
     const answer = {
       "@src/*": path.join(testRootDir, "exampleProject1/src/*"),
       "@exampleProject2/*": path.join(testRootDir, "exampleProject2/src/*"),
-      config: path.join(testRootDir, "exampleProject1/src/configs/config.ts")
+      config: path.join(testRootDir, "exampleProject1/src/configs/config.ts"),
     };
 
     expect(res).toEqual(answer);
@@ -54,7 +57,7 @@ describe("多项目解析", () => {
     const answer = {
       "@src/*": path.join(testRootDir, "exampleProject2/src/*"),
       "@exampleProject1/*": path.join(testRootDir, "exampleProject1/src/*"),
-      config: path.join(testRootDir, "exampleProject2/src/configs/config.ts")
+      config: path.join(testRootDir, "exampleProject2/src/configs/config.ts"),
     };
 
     expect(res).toEqual(answer);

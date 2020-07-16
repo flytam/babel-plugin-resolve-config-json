@@ -1,6 +1,9 @@
 import { transform, TransformOptions } from "@babel/core";
 import Plugin from "../src/index";
 import * as path from "path";
+
+const testRootDir = path.resolve(__dirname, "./");
+
 //  转换代码测试
 
 function testWithImport(
@@ -65,15 +68,15 @@ describe("单一项目内转换", () => {
         Plugin,
         {
           isTypescript: true,
-          modules: [path.resolve(__dirname, "./exampleProject1/")]
-        }
-      ]
-    ]
+          modules: [path.resolve(__dirname, "./exampleProject1/")],
+        },
+      ],
+    ],
   };
 
   const opts = {
     ...transformerOpts,
-    filename: path.resolve(__dirname, "./exampleProject1/src/index.ts")
+    filename: path.resolve(__dirname, "./exampleProject1/src/index.ts"),
   };
   test("require导入  const x = require(`${importPath}`)", () => {
     testWithRequire(
