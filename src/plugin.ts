@@ -1,137 +1,137 @@
-import * as path from "path";
-import * as t from "@babel/types";
-import { PluginObj, NodePath } from "@babel/core";
-import { parsePath } from "./parsePath";
+import * as path from 'path'
+import * as t from '@babel/types'
+import { PluginObj, NodePath } from '@babel/core'
+import { parsePath } from './parsePath'
 
 interface CustomParams {
-  isTypescript: boolean;
-  modules: string[];
+  isTypescript: boolean
+  modules: (string | RegExp)[]
 }
 
 interface Config {
   file: {
     opts: {
-      filename: string;
-    };
-  };
-  opts: CustomParams;
-  currentFilePath: string;
-  myPaths: { [key: string]: string };
+      filename: string
+    }
+  }
+  opts: CustomParams
+  currentFilePath: string
+  myPaths: { [key: string]: string }
 }
 
-const pwd = process.cwd();
+const pwd = process.cwd()
 
 export function Plugin() {
   const plugin: PluginObj<Config> = {
     pre() {
-      const currentFilePath = this.file?.opts?.filename;
+      const currentFilePath = this.file?.opts?.filename
 
-      const isTypescript = this.opts.isTypescript || false;
+      const isTypescript = this.opts.isTypescript || false
       if (process.env.DEBUG_BABEL) {
-        this.currentFilePath = currentFilePath;
+        this.currentFilePath = currentFilePath
       }
 
       // read from our config that dependence which modules
       // default our cmd directory
-      const depModules = this.opts.modules || [pwd];
+      const depModules = this.opts.modules || [pwd]
 
-      this.myPaths = parsePath(currentFilePath, depModules, isTypescript);
+      this.myPaths = parsePath(currentFilePath, depModules, isTypescript)
     },
     visitor: {
       ImportDeclaration: {
         enter(babelPath) {
           if (this.myPaths) {
             // import xx from `${importPath}`
-            const importPath = babelPath.node.source.value;
+            const importPath = babelPath.node.source.value
             processImportPath.call(
               this,
               importPath,
-              babelPath.get("source"),
+              babelPath.get('source'),
               this.myPaths
-            );
+            )
           }
-        }
+        },
       },
       ExportNamedDeclaration: {
         enter(babelPath) {
           if (this.myPaths) {
             // export xx from `${importPath}`
             if (babelPath?.node?.source?.value) {
-              const importPath = babelPath.node.source.value;
+              const importPath = babelPath.node.source.value
               processImportPath.call(
                 this,
                 importPath,
-                babelPath.get("source"),
+                babelPath.get('source'),
                 this.myPaths
-              );
+              )
             }
           }
-        }
+        },
       },
       CallExpression: {
         enter(babelPath) {
           if (this.myPaths) {
             // @ts-ignore
-            const isRequire = babelPath.get("callee").node.name === "require";
+            const isRequire = babelPath.get('callee').node.name === 'require'
 
             const isDynamicImport =
-              babelPath.get("callee").node.type === "Import";
+              babelPath.get('callee').node.type === 'Import'
 
             if (isRequire || isDynamicImport) {
               // const x = require(`${importPath}`)
               // @ts-ignore
-              const importPath = babelPath.get("arguments")?.[0].node.value;
+              const importPath = babelPath.get('arguments')?.[0].node.value
               processImportPath.call(
                 this,
                 importPath,
-                babelPath.get("arguments")[0],
+                babelPath.get('arguments')[0],
                 this.myPaths
-              );
+              )
             }
           }
-        }
-      }
-    }
-  };
-  return plugin;
+        },
+      },
+    },
+  }
+  return plugin
 }
 
 function processImportPath(
   importPath: string,
   babelPath: NodePath,
-  myPaths: Config["myPaths"]
+  myPaths: Config['myPaths']
 ) {
   for (let [p, absolutePath] of Object.entries(myPaths)) {
-    const regStrP = p.replace("*", "(.*)");
-    const reg = RegExp(`^${regStrP}$`);
+    const regStrP = p.replace('*', '(.*)')
+    const reg = RegExp(`^${regStrP}$`)
     if (reg.test(importPath)) {
       // hit mapping path mapping rule
       //---------
       try {
-        const result = importPath.match(RegExp(regStrP));
-        const catchPath = result && result[1];
+        const result = importPath.match(RegExp(regStrP))
+        const catchPath = result && result[1]
 
         const file = catchPath
-          ? absolutePath.replace("*", catchPath)
-          : absolutePath;
+          ? absolutePath.replace('*', catchPath)
+          : absolutePath
 
         if (process.env.DEBUG_BABEL) {
           console.log(
-            "import path：",
+            'import path：',
             importPath,
-            "\t",
-            "replace path：",
+            '\t',
+            'replace path：',
             file,
-            "\t",
-            "current file path",
+            '\t',
+            'current file path',
             this.currentFilePath,
-            "\t\n\n"
-          );
+            '\t\n\n'
+          )
         }
 
-        babelPath.replaceWith(t.stringLiteral(file));
+        babelPath.replaceWith(t.stringLiteral(file))
       } catch (e) {
-        console.warn(e);
+        console.warn(e)
       }
     }
   }

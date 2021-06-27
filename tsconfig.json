@@ -7,7 +7,8 @@
     "rootDir": "./src/",
     "moduleResolution": "node",
     "outDir": "build",
-    "lib": ["es5", "es2015"]
+    "lib": ["es5", "es2015"],
+    "esModuleInterop": true
   },
   "exclude": ["node_modules", "build", "tests"]
 }

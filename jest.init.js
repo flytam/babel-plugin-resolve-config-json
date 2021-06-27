@@ -1,5 +1,5 @@
-const { resolve } = require("path");
+const { resolve } = require('path')
 
-const testRootDir = resolve(__dirname, "./tests/");
+const testRootDir = resolve(__dirname, './tests/')
 
-global.testRootDir = testRootDir;
+global.testRootDir = testRootDir
